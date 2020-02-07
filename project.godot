@@ -8,9 +8,14 @@
 
 config_version=4
 
-_global_script_classes=[  ]
+_global_script_classes=[ {
+"base": "KinematicBody2D",
+"class": "Actor",
+"language": "GDScript",
+"path": "res://src/Actor.gd"
+} ]
 _global_script_class_icons={
-
+"Actor": ""
 }
 
 [application]
@@ -21,8 +26,8 @@ config/icon="res://icon.png"
 
 [autoload]
 
-gamestate="*res://src/gamestate.gd"
-network="*res://src/network.gd"
+gamestate="*res://src/raw/gamestate.gd"
+network="*res://src/raw/network.gd"
 
 [input]
 

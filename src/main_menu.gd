@@ -34,7 +34,7 @@ func set_player_info():
 
 
 func _on_ready_to_play():
-	get_tree().change_scene("res://assets/levels/test_level.tscn")
+	get_tree().change_scene("res://src/levels/test_level.tscn")
 
 
 
