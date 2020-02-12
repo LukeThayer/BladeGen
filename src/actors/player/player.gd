@@ -1,6 +1,9 @@
 extends Actor
 
-puppet var repl_position = Vector2()
+
+puppet var repl_jump = 0
+puppet var repl_right = 0
+puppet var repl_left = 0
 onready var camera = get_node("Camera2D")
 
 
@@ -21,29 +24,47 @@ func set_dominant_color(color):
 
 
 func _physics_process(delta: float) -> void:
+	var pressedJump : bool = 0
+	var pressedRight : int = 0
+	var pressedLeft : int= 0
 	if (is_network_master()):
 		# Initialize the movement vector
-		var move_dir = Vector2(0, 0)
 		
-		var direction: = getWalkDirection()
-		var jumpInterrupted: = Input.is_action_just_released("Jump") and velocity.y < 0
-		velocity = calc_Velocity(direction,maxSpeed,velocity,jumpInterrupted)
-		velocity = move_and_slide(velocity, FLOOR_NORMAL)
+		pressedJump = Input.get_action_strength("jump")
+		pressedRight = Input.get_action_strength("move_right")
+		pressedLeft = Input.get_action_strength("move_left")
+	
 		
-		# Apply the movement formula to obtain the new actor position
-		position += move_dir.normalized() * maxSpeed.x * delta
+		# Replicate the input
 		
-		# Replicate the position
-		rset("repl_position", position)
+		rset("repl_jump", pressedJump)
+		rset("repl_left", pressedLeft)
+		rset("repl_right", pressedRight)
+		
+		
 	else:
 		# Take replicated variables to set current actor state
-		position = repl_position
+		pressedJump = repl_jump
+		pressedLeft = repl_left
+		pressedRight = repl_right
+		
+	
+	var direction: = getWalkDirection(pressedRight,pressedLeft,pressedJump)
+	var jumpInterrupted: = !pressedJump and velocity.y < 0
+	velocity = calc_Velocity(direction,maxSpeed,velocity,jumpInterrupted)
+	velocity = move_and_slide(velocity, FLOOR_NORMAL)
 
 
-func getWalkDirection() -> Vector2:
+
+
+
+	Input.get_action_strength("move_left")
+	
+
+func getWalkDirection(right : int, left: int, jump : bool) -> Vector2:
 	return Vector2(
-	Input.get_action_strength("move_right")- Input.get_action_strength("move_left"),
-	-1.0 if Input.is_action_just_pressed("jump") and is_on_floor() else 1.0)
+	right- left,
+	-1.0 if jump and is_on_floor() else 1.0)
 
 
 func calc_Velocity(

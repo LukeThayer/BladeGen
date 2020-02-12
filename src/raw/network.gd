@@ -6,6 +6,8 @@ var server_info = {
 	used_port = 0         # Listening port
 }
 
+
+
 var players = {}
 
 signal server_created                          # when server is successfully created
